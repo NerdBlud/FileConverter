@@ -4,7 +4,7 @@ import {
   type TargetCategory,
   ALL_TARGETS,
 } from "@/lib/conversions";
-import { Search, Check } from "lucide-react";
+import { Search, Check, ChevronDown } from "lucide-react";
 
 interface FormatPickerProps {
   recommended: ConversionTarget[];
@@ -72,8 +72,9 @@ export function FormatPicker({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-1.5">
+    <section aria-labelledby="output-format" className="space-y-4">
+      <h2 id="output-format" className="text-sm font-semibold text-workspace-ink">Output format</h2>
+      <div className="flex flex-wrap gap-2">
         {recommended.slice(0, 8).map((target) => {
           const isSelected = selected?.ext === target.ext;
           return (
@@ -82,10 +83,11 @@ export function FormatPicker({
               type="button"
               disabled={disabled}
               onClick={() => onSelect(target)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold tracking-wider uppercase border transition-all duration-200 cursor-pointer ${
+              aria-pressed={isSelected}
+              className={`min-h-9 px-3 rounded-full text-xs font-semibold uppercase border transition-all duration-200 cursor-pointer ${
                 isSelected
-                  ? "bg-yellow-400 text-black border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)] scale-[1.02]"
-                  : "bg-black text-white border-zinc-800 hover:border-yellow-400 hover:text-yellow-400 hover:scale-105 active:scale-95"
+                  ? "bg-workspace-tint text-workspace-accent border-workspace-accent"
+                  : "bg-workspace-control text-workspace-ink border-transparent hover:border-workspace-accent hover:text-workspace-accent"
               }`}
             >
               .{target.ext.toUpperCase()}
@@ -94,93 +96,105 @@ export function FormatPicker({
         })}
       </div>
 
-      <div className="space-y-2">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search format..."
-            disabled={disabled}
-            className="w-full bg-black border border-zinc-800 focus:border-yellow-400 rounded-lg pl-9 pr-4 py-2 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none transition-all duration-200 focus:shadow-[0_0_15px_rgba(250,204,21,0.15)]"
-          />
-        </div>
-
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
-          {CATEGORY_TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                disabled={disabled}
-                className={`px-2.5 py-1 rounded text-[11px] font-mono tracking-wider transition-all duration-150 cursor-pointer ${
-                  isActive
-                    ? "bg-white text-black font-bold scale-105 shadow-sm"
-                    : "text-zinc-400 hover:text-yellow-400 hover:bg-zinc-900"
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="max-h-64 overflow-y-auto pr-1 rounded-xl border border-zinc-800 bg-black p-2">
-        {filteredFormats.length === 0 ? (
-          <div className="py-6 text-center space-y-2 animate-pop-in">
-            <p className="text-xs text-zinc-500 font-mono">Custom format:</p>
-            <form onSubmit={handleCustomSubmit} className="flex max-w-xs mx-auto gap-2">
+      <details className="disclosure rounded-2xl border border-workspace-line bg-workspace">
+        <summary className="disclosure-trigger px-4 py-3">
+          Browse all formats
+          <ChevronDown className="disclosure-chevron size-4" aria-hidden="true" />
+        </summary>
+        <div className="space-y-3 px-3 pb-3">
+          <div className="space-y-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-workspace-muted" />
               <input
                 type="text"
-                placeholder="Extension (e.g. m4v)"
-                value={customExt}
-                onChange={(e) => setCustomExt(e.target.value)}
-                className="flex-1 bg-zinc-950 border border-zinc-800 focus:border-yellow-400 rounded px-2.5 py-1 text-xs font-mono text-white focus:outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Search formats"
+                placeholder="Search formats"
+                disabled={disabled}
+                className="w-full bg-workspace-panel border border-workspace-line focus:border-workspace-accent rounded-full py-2.5 pr-4 pl-9 text-sm text-workspace-ink placeholder:text-workspace-muted transition-all duration-200"
               />
-              <button
-                type="submit"
-                className="bg-white hover:bg-yellow-400 hover:text-black text-black px-3 py-1 rounded text-xs font-bold font-mono transition-all duration-150"
-              >
-                SELECT
-              </button>
-            </form>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1">
+              {CATEGORY_TABS.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    aria-pressed={isActive}
+                    disabled={disabled}
+                    className={`min-h-9 px-2.5 rounded-full text-xs transition-all duration-150 cursor-pointer ${
+                      isActive
+                        ? "bg-workspace-control text-workspace-ink font-semibold"
+                        : "text-workspace-muted hover:text-workspace-accent hover:bg-workspace-control"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-            {filteredFormats.map((target) => {
-              const isSelected = selected?.ext === target.ext;
-              return (
-                <button
-                  key={target.ext}
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => onSelect(target)}
-                  className={`flex items-center justify-between p-2.5 rounded-lg border text-left transition-all duration-150 cursor-pointer ${
-                    isSelected
-                      ? "border-yellow-400 bg-yellow-400/10 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.15)] scale-[1.01]"
-                      : "border-zinc-900 bg-black text-white hover:border-yellow-400 hover:text-yellow-400 hover:scale-[1.02] active:scale-98"
-                  }`}
-                >
-                  <span className="font-mono font-bold text-xs">
-                    .{target.ext.toUpperCase()}
-                  </span>
-                  {isSelected ? (
-                    <Check className="h-3.5 w-3.5 text-yellow-400" />
-                  ) : (
-                    <span className="text-[10px] text-zinc-500 font-mono">
-                      {target.category.toUpperCase()}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+
+          <div className="max-h-64 overflow-y-auto pr-1 rounded-xl border border-workspace-line bg-workspace p-2">
+            {filteredFormats.length === 0 ? (
+              <div className="py-6 text-center space-y-2 animate-pop-in">
+                <p className="text-xs text-workspace-muted font-mono">No matching formats</p>
+                <form onSubmit={handleCustomSubmit} className="flex max-w-xs mx-auto gap-2">
+                  <input
+                    type="text"
+                    aria-label="Custom file extension"
+                    placeholder="Extension (e.g. m4v)"
+                    value={customExt}
+                    onChange={(e) => setCustomExt(e.target.value)}
+                    className="min-w-0 flex-1 bg-workspace border border-workspace-line focus:border-workspace-accent rounded px-2.5 py-1 text-xs text-workspace-ink"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-workspace-control hover:bg-workspace-edge text-workspace-ink px-3 py-1 rounded text-xs font-semibold transition-all duration-150"
+                  >
+                    SELECT
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                {filteredFormats.map((target) => {
+                  const isSelected = selected?.ext === target.ext;
+                  return (
+                    <button
+                      key={target.ext}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => onSelect(target)}
+                      aria-pressed={isSelected}
+                      className={`flex items-center justify-between p-2.5 rounded-lg border text-left transition-all duration-150 cursor-pointer ${
+                        isSelected
+                          ? "border-workspace-accent bg-workspace-tint text-workspace-accent"
+                          : "border-workspace-line bg-workspace-panel text-workspace-ink hover:border-workspace-accent hover:text-workspace-accent"
+                      }`}
+                    >
+                      <span className="font-semibold text-xs">
+                        .{target.ext.toUpperCase()}
+                      </span>
+                      {isSelected ? (
+                        <Check className="h-3.5 w-3.5 text-workspace-accent" />
+                      ) : (
+                        <span className="text-xs text-workspace-muted font-mono">
+                          {target.category.toUpperCase()}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </details>
+    </section>
   );
 }

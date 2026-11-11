@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { Download, RotateCcw, Copy, Check, Clock } from "lucide-react";
+import { Download, Copy, Check, Clock, ChevronDown } from "lucide-react";
 import type { ConversionStatus } from "@/hooks/useConverter";
 
 interface TerminalOverlayProps {
@@ -42,126 +42,135 @@ export function TerminalOverlay({
 
   const statusText =
     status === "loading"
-      ? "LOADING"
+      ? "Preparing conversion"
       : status === "converting"
-      ? `CONVERTING ${Math.round(progress * 100)}%`
+      ? `Converting · ${Math.round(progress * 100)}%`
       : status === "done"
-      ? "DONE"
+      ? "Conversion complete"
       : status === "error"
-      ? "ERROR"
-      : "READY";
+      ? "Conversion failed"
+      : "Ready";
 
   return (
-    <div className="border border-zinc-800 rounded-2xl p-6 bg-black text-white space-y-4 font-mono shadow-2xl animate-pop-in">
-      <div className="flex items-center justify-between border-b border-zinc-800 pb-3 text-xs">
+    <div className="border border-workspace-line rounded-3xl p-4 sm:p-6 bg-workspace-panel text-workspace-ink space-y-4 animate-pop-in">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span
-            className={`font-bold tracking-wider ${
+            role="status"
+            className={`text-base font-semibold ${
               status === "done"
-                ? "text-yellow-400"
+                ? "text-workspace-accent"
                 : status === "error"
-                ? "text-red-400"
-                : "text-white"
+                ? "text-red-300"
+                : "text-workspace-ink"
             }`}
           >
             {statusText}
           </span>
         </div>
 
-        <div className="flex items-center gap-3 text-zinc-500">
+        <div className="flex items-center gap-3 text-workspace-muted">
           {(status === "converting" || status === "done") && (
-            <span className="flex items-center gap-1 text-[11px] text-zinc-400">
-              <Clock className="h-3 w-3 text-yellow-400" />
+            <span className="flex items-center gap-1 text-xs text-workspace-muted">
+              <Clock className="h-3 w-3 text-workspace-accent" />
               {formattedTime}
             </span>
           )}
-
-          <button
-            type="button"
-            onClick={handleCopyLogs}
-            className="hover:text-yellow-400 flex items-center gap-1 transition-colors cursor-pointer"
-            title="Copy logs"
-          >
-            {copied ? <Check className="h-3 w-3 text-yellow-400" /> : <Copy className="h-3 w-3" />}
-            <span>{copied ? "COPIED" : "COPY"}</span>
-          </button>
         </div>
       </div>
 
-      <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
+      <div className="w-full bg-workspace-control h-1.5 rounded-full overflow-hidden">
         <div
-          className="bg-yellow-400 h-full transition-all duration-200 shadow-[0_0_10px_rgba(250,204,21,0.5)]"
+          className="bg-workspace-accent h-full transition-all duration-200"
           style={{ width: `${Math.max(progress * 100, status === "loading" ? 10 : 0)}%` }}
         />
       </div>
 
-      <div
-        ref={scrollRef}
-        className="h-60 overflow-y-auto bg-zinc-950 border border-zinc-900 rounded-xl p-3.5 text-xs space-y-1.5 text-zinc-400"
-      >
-        {logs.length === 0 ? (
-          <p className="text-zinc-600 flex items-center gap-1">
-            <span>Running</span>
-            <span className="inline-block w-1.5 h-3.5 bg-yellow-400 animate-cursor" />
-          </p>
-        ) : (
-          <>
-            {logs.map((log, i) => (
-              <p
-                key={i}
-                className={`leading-relaxed break-all ${
-                  log.includes("Processing complete") || log.includes("Done")
-                    ? "text-yellow-400 font-bold"
-                    : log.includes("Error") || log.includes("failed")
-                    ? "text-red-400"
-                    : "text-zinc-400"
-                }`}
-              >
-                <span className="text-zinc-600 select-none">&gt; </span>
-                {log}
+      <details open={status === "error"} className="disclosure rounded-2xl border border-workspace-line bg-workspace">
+        <summary className="disclosure-trigger px-4 py-3">
+          Conversion log
+          <ChevronDown className="disclosure-chevron size-4" aria-hidden="true" />
+        </summary>
+        <div className="space-y-2 px-3 pb-3">
+          <div
+            ref={scrollRef}
+            className="max-h-52 overflow-y-auto font-mono bg-workspace border border-workspace-line rounded-xl p-3.5 text-xs space-y-1.5 text-workspace-muted"
+          >
+            {logs.length === 0 ? (
+              <p className="text-workspace-muted flex items-center gap-1">
+                <span>Running</span>
+                <span className="inline-block w-1.5 h-3.5 bg-workspace-accent animate-cursor" />
               </p>
-            ))}
-            {(status === "converting" || status === "loading") && (
-              <p className="text-yellow-400 flex items-center gap-1">
-                <span className="text-zinc-600 select-none">&gt; </span>
-                <span className="inline-block w-2 h-3.5 bg-yellow-400 animate-cursor" />
-              </p>
+            ) : (
+              <>
+                {logs.map((log, i) => (
+                  <p
+                    key={i}
+                    className={`leading-relaxed break-all ${
+                      log.includes("Processing complete") || log.includes("Done")
+                        ? "text-workspace-accent font-bold"
+                        : log.includes("Error") || log.includes("failed")
+                        ? "text-red-300"
+                        : "text-workspace-muted"
+                    }`}
+                  >
+                    <span className="text-workspace-muted select-none">&gt; </span>
+                    {log}
+                  </p>
+                ))}
+                {(status === "converting" || status === "loading") && (
+                  <p className="text-workspace-accent flex items-center gap-1">
+                    <span className="text-workspace-muted select-none">&gt; </span>
+                    <span className="inline-block w-2 h-3.5 bg-workspace-accent animate-cursor" />
+                  </p>
+                )}
+              </>
             )}
-          </>
-        )}
-      </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleCopyLogs}
+            className="flex min-h-9 cursor-pointer items-center gap-1.5 rounded-md px-2 text-sm text-workspace-muted hover:bg-workspace-control hover:text-workspace-accent"
+            title="Copy logs"
+          >
+            {copied ? <Check className="h-3 w-3 text-workspace-accent" /> : <Copy className="h-3 w-3" />}
+            <span>{copied ? "Copied" : "Copy log"}</span>
+          </button>
+        </div>
+      </details>
 
       {status === "done" && resultUrl && (
-        <div className="flex gap-2 pt-2 animate-pop-in">
+        <div className="flex flex-wrap items-center gap-2 pt-2 animate-pop-in">
           <a
             href={resultUrl}
             download={resultFilename ?? "converted-file"}
-            className="flex-1 h-12 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] active:scale-95 transition-all duration-200 cursor-pointer"
+            className="flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-workspace-accent px-4 text-center text-sm font-semibold text-workspace transition-colors hover:bg-workspace-accent-hover"
           >
             <Download className="h-4 w-4" />
-            DOWNLOAD {resultFilename}
+            <span className="min-w-0 truncate">Download {resultFilename}</span>
           </a>
           <button
             type="button"
             onClick={onReset}
-            className="h-12 px-5 rounded-xl border border-zinc-800 text-white hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95"
+            className="min-h-11 cursor-pointer rounded-lg px-3 text-sm font-medium text-workspace-accent hover:bg-workspace-tint"
           >
-            <RotateCcw className="h-4 w-4" />
+            Convert another
           </button>
         </div>
       )}
 
       {status === "error" && (
         <div className="space-y-2 pt-2 animate-pop-in">
-          <p className="text-xs text-red-400 border border-red-900/40 p-2.5 rounded-lg bg-red-950/20">
+          <p className="text-xs text-red-300 border border-red-900 p-2.5 rounded-lg bg-red-950/40">
             {error || "Conversion failed."}
           </p>
           <button
             type="button"
             onClick={onReset}
-            className="w-full h-11 rounded-xl border border-zinc-800 text-white hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95"
+            className="w-full h-11 rounded-xl border border-workspace-line text-workspace-ink hover:border-workspace-accent hover:text-workspace-accent text-xs font-bold transition-all duration-200 cursor-pointer"
           >
-            RETRY
+            Choose different files
           </button>
         </div>
       )}

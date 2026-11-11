@@ -1,6 +1,17 @@
 @import "tailwindcss";
 
 @theme {
+  --color-workspace: #141310;
+  --color-workspace-panel: #1d1b16;
+  --color-workspace-control: #2b2820;
+  --color-workspace-line: #38342a;
+  --color-workspace-edge: #605843;
+  --color-workspace-ink: #f2f5f4;
+  --color-workspace-muted: #bcb6a8;
+  --color-workspace-accent: #facc15;
+  --color-workspace-accent-hover: #fde047;
+  --color-workspace-tint: #382d11;
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -27,7 +38,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 204 13% 8%;
     --foreground: 0 0% 100%;
     --card: 0 0% 4%;
     --card-foreground: 0 0% 100%;
@@ -83,8 +94,8 @@
 }
 
 ::selection {
-  background-color: #facc15;
-  color: #000000;
+  background-color: var(--color-workspace-accent);
+  color: var(--color-workspace);
 }
 
 @keyframes cursorBlink {
@@ -98,8 +109,8 @@
 }
 
 @keyframes popIn {
-  0% { opacity: 0; transform: scale(0.96) translateY(8px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 .animate-pop-in {
@@ -112,4 +123,80 @@
 
 .animate-yellow-pulse {
   animation: yellowPulse 2s infinite ease-in-out;
+}
+
+@layer base {
+  :where(button, a, input, summary):focus-visible {
+    outline: 2px solid var(--color-workspace-accent);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop-in,
+  .animate-cursor {
+    animation: none;
+  }
+}
+
+@layer components {
+  .disclosure-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    border-radius: 1rem;
+    color: var(--color-workspace-muted);
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 160ms ease;
+  }
+
+  .disclosure-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .disclosure-trigger:hover,
+  .disclosure[open] > .disclosure-trigger {
+    color: var(--color-workspace-accent);
+  }
+
+  .disclosure-chevron {
+    flex-shrink: 0;
+    transition: transform 220ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .disclosure[open] > .disclosure-trigger .disclosure-chevron {
+    transform: rotate(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (interpolate-size: allow-keywords) and selector(details::details-content) {
+    .disclosure::details-content {
+      interpolate-size: allow-keywords;
+      block-size: 0;
+      overflow: clip;
+      opacity: 0;
+      transition:
+        block-size 240ms cubic-bezier(0.2, 0, 0, 1),
+        opacity 160ms ease,
+        content-visibility 240ms allow-discrete;
+    }
+
+    .disclosure[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disclosure-trigger,
+  .disclosure-chevron {
+    transition: none;
+  }
 }
