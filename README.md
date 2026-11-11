@@ -2,7 +2,7 @@
 
 Client-side file conversion web application. Converts video, audio, image, and document files directly inside the browser using WebAssembly.
 
-GitHub Repository: https://github.com/nerdblud/FileConverter
+**[Open the live preview](https://nerdblud.github.io/FileConverter/)** to convert a file in your browser.
 
 ## Features
 

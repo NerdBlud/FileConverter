@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { Download, Copy, Check, Clock } from "lucide-react";
+import { Download, Copy, Check, Clock, ChevronDown } from "lucide-react";
 import type { ConversionStatus } from "@/hooks/useConverter";
 
 interface TerminalOverlayProps {
@@ -86,55 +86,58 @@ export function TerminalOverlay({
         />
       </div>
 
-      <details open={status === "error"} className="space-y-3">
-        <summary className="w-fit cursor-pointer rounded-sm text-sm font-medium text-workspace-muted">
+      <details open={status === "error"} className="disclosure rounded-2xl border border-workspace-line bg-workspace">
+        <summary className="disclosure-trigger px-4 py-3">
           Conversion log
+          <ChevronDown className="disclosure-chevron size-4" aria-hidden="true" />
         </summary>
-        <div
-          ref={scrollRef}
-          className="max-h-52 overflow-y-auto font-mono bg-workspace border border-workspace-line rounded-xl p-3.5 text-xs space-y-1.5 text-workspace-muted"
-        >
-          {logs.length === 0 ? (
-            <p className="text-workspace-muted flex items-center gap-1">
-              <span>Running</span>
-              <span className="inline-block w-1.5 h-3.5 bg-workspace-accent animate-cursor" />
-            </p>
-          ) : (
-            <>
-              {logs.map((log, i) => (
-                <p
-                  key={i}
-                  className={`leading-relaxed break-all ${
-                    log.includes("Processing complete") || log.includes("Done")
-                      ? "text-workspace-accent font-bold"
-                      : log.includes("Error") || log.includes("failed")
-                      ? "text-red-300"
-                      : "text-workspace-muted"
-                  }`}
-                >
-                  <span className="text-workspace-muted select-none">&gt; </span>
-                  {log}
-                </p>
-              ))}
-              {(status === "converting" || status === "loading") && (
-                <p className="text-workspace-accent flex items-center gap-1">
-                  <span className="text-workspace-muted select-none">&gt; </span>
-                  <span className="inline-block w-2 h-3.5 bg-workspace-accent animate-cursor" />
-                </p>
-              )}
-            </>
-          )}
-        </div>
+        <div className="space-y-2 px-3 pb-3">
+          <div
+            ref={scrollRef}
+            className="max-h-52 overflow-y-auto font-mono bg-workspace border border-workspace-line rounded-xl p-3.5 text-xs space-y-1.5 text-workspace-muted"
+          >
+            {logs.length === 0 ? (
+              <p className="text-workspace-muted flex items-center gap-1">
+                <span>Running</span>
+                <span className="inline-block w-1.5 h-3.5 bg-workspace-accent animate-cursor" />
+              </p>
+            ) : (
+              <>
+                {logs.map((log, i) => (
+                  <p
+                    key={i}
+                    className={`leading-relaxed break-all ${
+                      log.includes("Processing complete") || log.includes("Done")
+                        ? "text-workspace-accent font-bold"
+                        : log.includes("Error") || log.includes("failed")
+                        ? "text-red-300"
+                        : "text-workspace-muted"
+                    }`}
+                  >
+                    <span className="text-workspace-muted select-none">&gt; </span>
+                    {log}
+                  </p>
+                ))}
+                {(status === "converting" || status === "loading") && (
+                  <p className="text-workspace-accent flex items-center gap-1">
+                    <span className="text-workspace-muted select-none">&gt; </span>
+                    <span className="inline-block w-2 h-3.5 bg-workspace-accent animate-cursor" />
+                  </p>
+                )}
+              </>
+            )}
+          </div>
 
-        <button
-          type="button"
-          onClick={handleCopyLogs}
-          className="flex min-h-9 cursor-pointer items-center gap-1.5 rounded-md px-2 text-sm text-workspace-muted hover:bg-workspace-control hover:text-workspace-accent"
-          title="Copy logs"
-        >
-          {copied ? <Check className="h-3 w-3 text-workspace-accent" /> : <Copy className="h-3 w-3" />}
-          <span>{copied ? "Copied" : "Copy log"}</span>
-        </button>
+          <button
+            type="button"
+            onClick={handleCopyLogs}
+            className="flex min-h-9 cursor-pointer items-center gap-1.5 rounded-md px-2 text-sm text-workspace-muted hover:bg-workspace-control hover:text-workspace-accent"
+            title="Copy logs"
+          >
+            {copied ? <Check className="h-3 w-3 text-workspace-accent" /> : <Copy className="h-3 w-3" />}
+            <span>{copied ? "Copied" : "Copy log"}</span>
+          </button>
+        </div>
       </details>
 
       {status === "done" && resultUrl && (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FormatPicker } from "@/components/FormatPicker";
-import { ArrowRight, Sliders, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, Sliders, ChevronDown } from "lucide-react";
 import {
   detectCategory,
   getSmartTargets,
@@ -93,93 +93,89 @@ export function ConversionPanel({
       )}
 
       {(isAudioTarget || isVideoTarget || isGifTarget) && (
-        <div className="border border-workspace-line rounded-xl overflow-hidden bg-workspace transition-all duration-200">
-          <button
-            type="button"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            aria-expanded={showAdvanced}
-            className="w-full px-4 py-2.5 flex items-center justify-between text-xs text-workspace-muted hover:text-workspace-accent transition-colors"
-          >
-            <span className="flex items-center gap-1.5 font-semibold">
-              <Sliders className="h-3.5 w-3.5" />
+        <details
+          className="disclosure rounded-2xl border border-workspace-line bg-workspace"
+          open={showAdvanced}
+          onToggle={(event) => setShowAdvanced(event.currentTarget.open)}
+        >
+          <summary className="disclosure-trigger px-4 py-3">
+            <span className="flex items-center gap-2">
+              <Sliders className="size-4" aria-hidden="true" />
               Options
             </span>
-            {showAdvanced ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-          </button>
-
-          {showAdvanced && (
-            <div className="p-4 border-t border-workspace-line space-y-3 text-xs animate-pop-in">
-              {isAudioTarget && (
-                <div className="space-y-1.5">
-                  <span className="text-workspace-muted block">Bitrate</span>
-                  <div className="flex flex-wrap gap-2">
-                    {(["128k", "192k", "320k", "lossless"] as const).map((b) => (
-                      <button
-                        key={b}
-                        type="button"
-                        onClick={() => setAudioBitrate(b)}
-                        aria-pressed={audioBitrate === b}
-                        className={`min-h-8 rounded-full px-3 text-xs font-bold border uppercase transition-colors ${
-                          audioBitrate === b
-                            ? "bg-workspace-accent text-workspace border-workspace-accent"
-                            : "border-workspace-line text-workspace-muted hover:border-workspace-accent hover:text-workspace-accent"
-                        }`}
-                      >
-                        {b}
-                      </button>
-                    ))}
-                  </div>
+            <ChevronDown className="disclosure-chevron size-4" aria-hidden="true" />
+          </summary>
+          <div className="space-y-3 px-4 pb-4 text-xs">
+            {isAudioTarget && (
+              <div className="space-y-1.5">
+                <span className="text-workspace-muted block">Bitrate</span>
+                <div className="flex flex-wrap gap-2">
+                  {(["128k", "192k", "320k", "lossless"] as const).map((b) => (
+                    <button
+                      key={b}
+                      type="button"
+                      onClick={() => setAudioBitrate(b)}
+                      aria-pressed={audioBitrate === b}
+                      className={`min-h-8 rounded-full px-3 text-xs font-bold border uppercase transition-colors ${
+                        audioBitrate === b
+                          ? "bg-workspace-accent text-workspace border-workspace-accent"
+                          : "border-workspace-line text-workspace-muted hover:border-workspace-accent hover:text-workspace-accent"
+                      }`}
+                    >
+                      {b}
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {isVideoTarget && (
-                <div className="space-y-1.5">
-                  <span className="text-workspace-muted block">Resolution</span>
-                  <div className="flex flex-wrap gap-2">
-                    {(["original", "1080p", "720p", "480p"] as const).map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setVideoScale(s)}
-                        aria-pressed={videoScale === s}
-                        className={`min-h-8 rounded-full px-3 text-xs font-bold border uppercase transition-colors ${
-                          videoScale === s
-                            ? "bg-workspace-accent text-workspace border-workspace-accent"
-                            : "border-workspace-line text-workspace-muted hover:border-workspace-accent hover:text-workspace-accent"
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
+            {isVideoTarget && (
+              <div className="space-y-1.5">
+                <span className="text-workspace-muted block">Resolution</span>
+                <div className="flex flex-wrap gap-2">
+                  {(["original", "1080p", "720p", "480p"] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setVideoScale(s)}
+                      aria-pressed={videoScale === s}
+                      className={`min-h-8 rounded-full px-3 text-xs font-bold border uppercase transition-colors ${
+                        videoScale === s
+                          ? "bg-workspace-accent text-workspace border-workspace-accent"
+                          : "border-workspace-line text-workspace-muted hover:border-workspace-accent hover:text-workspace-accent"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {isGifTarget && (
-                <div className="space-y-1.5">
-                  <span className="text-workspace-muted block">Frame rate</span>
-                  <div className="flex flex-wrap gap-2">
-                    {([8, 12, 15, 24] as const).map((fps) => (
-                      <button
-                        key={fps}
-                        type="button"
-                        onClick={() => setGifFps(fps)}
-                        aria-pressed={gifFps === fps}
-                        className={`min-h-8 rounded-full px-3 text-xs font-bold border uppercase transition-colors ${
-                          gifFps === fps
-                            ? "bg-workspace-accent text-workspace border-workspace-accent"
-                            : "border-workspace-line text-workspace-muted hover:border-workspace-accent hover:text-workspace-accent"
-                        }`}
-                      >
-                        {fps} FPS
-                      </button>
-                    ))}
-                  </div>
+            {isGifTarget && (
+              <div className="space-y-1.5">
+                <span className="text-workspace-muted block">Frame rate</span>
+                <div className="flex flex-wrap gap-2">
+                  {([8, 12, 15, 24] as const).map((fps) => (
+                    <button
+                      key={fps}
+                      type="button"
+                      onClick={() => setGifFps(fps)}
+                      aria-pressed={gifFps === fps}
+                      className={`min-h-8 rounded-full px-3 text-xs font-bold border uppercase transition-colors ${
+                        gifFps === fps
+                          ? "bg-workspace-accent text-workspace border-workspace-accent"
+                          : "border-workspace-line text-workspace-muted hover:border-workspace-accent hover:text-workspace-accent"
+                      }`}
+                    >
+                      {fps} FPS
+                    </button>
+                  ))}
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+        </details>
       )}
 
       <div className="flex gap-2 pt-2">
