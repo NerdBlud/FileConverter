@@ -1,3 +1,4 @@
+import { ArrowLeftRight, ShieldCheck } from "lucide-react";
 import { useState, useCallback } from "react";
 import { Dropzone } from "@/components/Dropzone";
 import { ConversionPanel } from "@/components/ConversionPanel";
@@ -32,8 +33,19 @@ export default function App() {
     converter.status === "error";
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 sm:p-6 font-sans">
-      <main className="w-full max-w-2xl mx-auto space-y-4">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 px-4 py-8 sm:px-6 sm:py-16 font-sans">
+      <main className="mx-auto w-full max-w-2xl space-y-8">
+        <header className="space-y-4">
+          <div className="grid size-12 place-items-center rounded-xl border border-yellow-400/20 bg-yellow-400/10 text-yellow-400">
+            <ArrowLeftRight className="size-5" aria-hidden="true" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">FileConverter</h1>
+            <p className="max-w-prose text-sm leading-relaxed text-zinc-400 sm:text-base">
+              Convert images, audio, video, and PDFs in your browser.
+            </p>
+          </div>
+        </header>
         {!files && <Dropzone onFilesSelected={handleFilesSelected} />}
 
         {files && !showTerminal && (
@@ -56,6 +68,10 @@ export default function App() {
             onReset={handleReset}
           />
         )}
+        <p className="flex items-center gap-2 text-sm text-zinc-400">
+          <ShieldCheck className="size-4 shrink-0 text-yellow-400" aria-hidden="true" />
+          Your files stay on this device.
+        </p>
       </main>
     </div>
   );

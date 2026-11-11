@@ -53,36 +53,30 @@ export function Dropzone({ onFilesSelected }: DropzoneProps) {
   };
 
   return (
-    <div
-      className={`group relative cursor-pointer border-2 border-dashed rounded-2xl p-16 sm:p-24 flex flex-col items-center justify-center gap-5 transition-all duration-300 bg-black text-white select-none overflow-hidden ${
-        isDragActive
-          ? "border-yellow-400 text-yellow-400 bg-zinc-950 scale-[1.02] shadow-[0_0_30px_rgba(250,204,21,0.2)]"
-          : "border-zinc-800 hover:border-yellow-400 hover:text-yellow-400 hover:scale-[1.01] hover:shadow-[0_0_25px_rgba(250,204,21,0.12)]"
-      }`}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      onClick={handleClick}
-    >
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-3 sm:p-4">
       <div
-        className={`p-4 rounded-xl border border-zinc-900 bg-zinc-950 transition-all duration-300 group-hover:border-yellow-400 group-hover:bg-yellow-400/5 group-hover:scale-110 ${
-          isDragActive ? "border-yellow-400 bg-yellow-400/10 scale-110" : ""
+        className={`flex min-h-64 flex-col items-center justify-center gap-4 rounded-xl border border-dashed px-4 py-8 text-center transition-colors ${
+          isDragActive
+            ? "border-yellow-400 bg-yellow-400/10"
+            : "border-zinc-600 bg-zinc-950/60"
         }`}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
       >
-        <Upload
-          className={`h-10 w-10 transition-transform duration-300 group-hover:scale-110 group-hover:text-yellow-400 ${
-            isDragActive ? "text-yellow-400 scale-110" : "text-white"
-          }`}
-        />
-      </div>
-
-      <div className="text-center space-y-1">
-        <p className="text-sm font-mono font-bold tracking-widest uppercase transition-colors duration-200 group-hover:text-yellow-400">
-          {isDragActive ? "DROP FILE" : "DROP FILE OR CLICK"}
+        <Upload className="size-6 text-yellow-400" aria-hidden="true" />
+        <p className="text-base font-medium">
+          {isDragActive ? "Release to add your files" : "Drag and drop your files here"}
         </p>
+        <button
+          type="button"
+          onClick={handleClick}
+          className="min-h-11 cursor-pointer rounded-lg bg-yellow-400 px-5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-yellow-300"
+        >
+          Choose files
+        </button>
       </div>
-
       <input
         ref={inputRef}
         type="file"

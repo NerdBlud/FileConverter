@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { Download, RotateCcw, Copy, Check, Clock } from "lucide-react";
+import { Download, Copy, Check, Clock } from "lucide-react";
 import type { ConversionStatus } from "@/hooks/useConverter";
 
 interface TerminalOverlayProps {
@@ -52,7 +52,7 @@ export function TerminalOverlay({
       : "READY";
 
   return (
-    <div className="border border-zinc-800 rounded-2xl p-6 bg-black text-white space-y-4 font-mono shadow-2xl animate-pop-in">
+    <div className="border border-zinc-800 rounded-2xl p-4 sm:p-6 bg-zinc-900 text-white space-y-4 font-mono animate-pop-in">
       <div className="flex items-center justify-between border-b border-zinc-800 pb-3 text-xs">
         <div className="flex items-center gap-2">
           <span
@@ -132,21 +132,21 @@ export function TerminalOverlay({
       </div>
 
       {status === "done" && resultUrl && (
-        <div className="flex gap-2 pt-2 animate-pop-in">
+        <div className="flex flex-wrap items-center gap-2 pt-2 animate-pop-in">
           <a
             href={resultUrl}
             download={resultFilename ?? "converted-file"}
-            className="flex-1 h-12 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] active:scale-95 transition-all duration-200 cursor-pointer"
+            className="flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg bg-yellow-400 px-4 text-center text-sm font-semibold text-zinc-950 transition-colors hover:bg-yellow-300"
           >
             <Download className="h-4 w-4" />
-            DOWNLOAD {resultFilename}
+            <span className="min-w-0 truncate">Download {resultFilename}</span>
           </a>
           <button
             type="button"
             onClick={onReset}
             className="h-12 px-5 rounded-xl border border-zinc-800 text-white hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95"
           >
-            <RotateCcw className="h-4 w-4" />
+            Convert another
           </button>
         </div>
       )}
@@ -161,7 +161,7 @@ export function TerminalOverlay({
             onClick={onReset}
             className="w-full h-11 rounded-xl border border-zinc-800 text-white hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95"
           >
-            RETRY
+            Choose different files
           </button>
         </div>
       )}

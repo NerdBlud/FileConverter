@@ -113,3 +113,17 @@
 .animate-yellow-pulse {
   animation: yellowPulse 2s infinite ease-in-out;
 }
+
+@layer base {
+  :where(button, a):focus-visible {
+    outline: 2px solid var(--color-yellow-400);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop-in,
+  .animate-cursor {
+    animation: none;
+  }
+}

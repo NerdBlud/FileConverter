@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { FormatPicker } from "@/components/FormatPicker";
-import { ArrowRight, RotateCcw, Sliders, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, Sliders, ChevronDown, ChevronUp } from "lucide-react";
 import {
+  detectCategory,
   getSmartTargets,
   type ConversionTarget,
   type ConversionOptions,
@@ -55,26 +56,27 @@ export function ConversionPanel({
     }
   };
 
+  const inputCategory = detectCategory(file);
+  const usesAllFiles = selectedTarget?.ext === "pdf" && (inputCategory === "image" || inputCategory === "document");
   const isAudioTarget = selectedTarget?.category === "audio";
   const isVideoTarget = selectedTarget?.category === "video";
   const isGifTarget = selectedTarget?.ext === "gif";
 
   return (
-    <div className="border border-zinc-800 rounded-2xl p-6 bg-black text-white space-y-6 shadow-2xl animate-pop-in">
-      <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-        <div className="space-y-0.5 max-w-[75%]">
-          <p className="text-sm font-mono font-bold truncate">{file.name}</p>
-          <p className="text-xs font-mono text-zinc-500">{formatFileSize(file.size)}</p>
+    <div className="border border-zinc-800 rounded-2xl p-4 sm:p-6 bg-zinc-900 text-white space-y-6 animate-pop-in">
+      <div className="flex items-start justify-between gap-3 border-b border-zinc-800 pb-4">
+        <div className="min-w-0 space-y-1">
+          <p className="text-sm font-semibold [overflow-wrap:anywhere]">{file.name}</p>
+          <p className="text-sm text-zinc-400">{files.length === 1 ? formatFileSize(file.size) : `${files.length} files selected`}</p>
         </div>
 
         <button
           type="button"
           onClick={onReset}
           disabled={disabled}
-          className="text-xs font-mono text-zinc-400 hover:text-yellow-400 flex items-center gap-1 transition-colors cursor-pointer"
+          className="shrink-0 rounded-md px-2 py-1 text-sm text-zinc-300 transition-colors hover:text-yellow-400 cursor-pointer"
         >
-          <RotateCcw className="h-3 w-3" />
-          RESET
+          Change files
         </button>
       </div>
 
@@ -86,11 +88,16 @@ export function ConversionPanel({
         disabled={disabled}
       />
 
+      {files.length > 1 && selectedTarget && !usesAllFiles && (
+        <p className="text-sm text-zinc-400">Only the first selected file will be converted to this format.</p>
+      )}
+
       {(isAudioTarget || isVideoTarget || isGifTarget) && (
         <div className="border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950/60 transition-all duration-200">
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
+            aria-expanded={showAdvanced}
             className="w-full px-4 py-2.5 flex items-center justify-between text-xs font-mono text-zinc-400 hover:text-yellow-400 transition-colors"
           >
             <span className="flex items-center gap-1.5 font-bold uppercase">
@@ -105,12 +112,13 @@ export function ConversionPanel({
               {isAudioTarget && (
                 <div className="space-y-1.5">
                   <span className="text-zinc-500 block">BITRATE</span>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {(["128k", "192k", "320k", "lossless"] as const).map((b) => (
                       <button
                         key={b}
                         type="button"
                         onClick={() => setAudioBitrate(b)}
+                        aria-pressed={audioBitrate === b}
                         className={`px-3 py-1 rounded text-[11px] font-bold border uppercase transition-colors ${
                           audioBitrate === b
                             ? "bg-yellow-400 text-black border-yellow-400"
@@ -127,12 +135,13 @@ export function ConversionPanel({
               {isVideoTarget && (
                 <div className="space-y-1.5">
                   <span className="text-zinc-500 block">RESOLUTION</span>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {(["original", "1080p", "720p", "480p"] as const).map((s) => (
                       <button
                         key={s}
                         type="button"
                         onClick={() => setVideoScale(s)}
+                        aria-pressed={videoScale === s}
                         className={`px-3 py-1 rounded text-[11px] font-bold border uppercase transition-colors ${
                           videoScale === s
                             ? "bg-yellow-400 text-black border-yellow-400"
@@ -149,12 +158,13 @@ export function ConversionPanel({
               {isGifTarget && (
                 <div className="space-y-1.5">
                   <span className="text-zinc-500 block">FRAME RATE</span>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {([8, 12, 15, 24] as const).map((fps) => (
                       <button
                         key={fps}
                         type="button"
                         onClick={() => setGifFps(fps)}
+                        aria-pressed={gifFps === fps}
                         className={`px-3 py-1 rounded text-[11px] font-bold border uppercase transition-colors ${
                           gifFps === fps
                             ? "bg-yellow-400 text-black border-yellow-400"
@@ -177,20 +187,10 @@ export function ConversionPanel({
           type="button"
           onClick={handleConvert}
           disabled={disabled || !selectedTarget}
-          className="flex-1 h-12 rounded-xl bg-white text-black font-mono font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 hover:bg-yellow-400 hover:text-black hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(250,204,21,0.3)] active:scale-95 transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+          className="flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-yellow-400 px-4 text-sm font-semibold text-zinc-950 transition-colors hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          CONVERT TO .{selectedTarget?.ext.toUpperCase() || "FORMAT"}
-          <ArrowRight className="h-4 w-4" />
-        </button>
-
-        <button
-          type="button"
-          onClick={onReset}
-          disabled={disabled}
-          className="h-12 px-4 rounded-xl border border-zinc-800 text-zinc-400 hover:border-yellow-400 hover:text-yellow-400 transition-colors flex items-center justify-center cursor-pointer active:scale-95"
-          title="Reset"
-        >
-          <RotateCcw className="h-4 w-4" />
+          {selectedTarget ? `Convert to ${selectedTarget.ext.toUpperCase()}` : "Choose an output format"}
+          <ArrowRight className="size-4" aria-hidden="true" />
         </button>
       </div>
     </div>

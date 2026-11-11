@@ -72,7 +72,8 @@ export function FormatPicker({
   };
 
   return (
-    <div className="space-y-4">
+    <section aria-labelledby="output-format" className="space-y-4">
+      <h2 id="output-format" className="text-sm font-semibold text-zinc-100">Output format</h2>
       <div className="flex flex-wrap gap-1.5">
         {recommended.slice(0, 8).map((target) => {
           const isSelected = selected?.ext === target.ext;
@@ -82,10 +83,11 @@ export function FormatPicker({
               type="button"
               disabled={disabled}
               onClick={() => onSelect(target)}
+              aria-pressed={isSelected}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold tracking-wider uppercase border transition-all duration-200 cursor-pointer ${
                 isSelected
-                  ? "bg-yellow-400 text-black border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)] scale-[1.02]"
-                  : "bg-black text-white border-zinc-800 hover:border-yellow-400 hover:text-yellow-400 hover:scale-105 active:scale-95"
+                  ? "bg-yellow-400/10 text-yellow-400 border-yellow-400"
+                  : "bg-black text-white border-zinc-800 hover:border-yellow-400 hover:text-yellow-400"
               }`}
             >
               .{target.ext.toUpperCase()}
@@ -101,13 +103,14 @@ export function FormatPicker({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search format..."
+            aria-label="Search formats"
+            placeholder="Search formats"
             disabled={disabled}
             className="w-full bg-black border border-zinc-800 focus:border-yellow-400 rounded-lg pl-9 pr-4 py-2 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none transition-all duration-200 focus:shadow-[0_0_15px_rgba(250,204,21,0.15)]"
           />
         </div>
 
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex flex-wrap items-center gap-1">
           {CATEGORY_TABS.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -115,10 +118,11 @@ export function FormatPicker({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
+                aria-pressed={isActive}
                 disabled={disabled}
-                className={`px-2.5 py-1 rounded text-[11px] font-mono tracking-wider transition-all duration-150 cursor-pointer ${
+                className={`min-h-9 px-2.5 rounded text-[11px] font-mono tracking-wider transition-all duration-150 cursor-pointer ${
                   isActive
-                    ? "bg-white text-black font-bold scale-105 shadow-sm"
+                    ? "bg-zinc-200 text-zinc-950 font-semibold"
                     : "text-zinc-400 hover:text-yellow-400 hover:bg-zinc-900"
                 }`}
               >
@@ -136,10 +140,11 @@ export function FormatPicker({
             <form onSubmit={handleCustomSubmit} className="flex max-w-xs mx-auto gap-2">
               <input
                 type="text"
+                aria-label="Custom file extension"
                 placeholder="Extension (e.g. m4v)"
                 value={customExt}
                 onChange={(e) => setCustomExt(e.target.value)}
-                className="flex-1 bg-zinc-950 border border-zinc-800 focus:border-yellow-400 rounded px-2.5 py-1 text-xs font-mono text-white focus:outline-none"
+                className="min-w-0 flex-1 bg-zinc-950 border border-zinc-800 focus:border-yellow-400 rounded px-2.5 py-1 text-xs font-mono text-white focus:outline-none"
               />
               <button
                 type="submit"
@@ -159,10 +164,11 @@ export function FormatPicker({
                   type="button"
                   disabled={disabled}
                   onClick={() => onSelect(target)}
+                  aria-pressed={isSelected}
                   className={`flex items-center justify-between p-2.5 rounded-lg border text-left transition-all duration-150 cursor-pointer ${
                     isSelected
-                      ? "border-yellow-400 bg-yellow-400/10 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.15)] scale-[1.01]"
-                      : "border-zinc-900 bg-black text-white hover:border-yellow-400 hover:text-yellow-400 hover:scale-[1.02] active:scale-98"
+                      ? "border-yellow-400 bg-yellow-400/10 text-yellow-400"
+                      : "border-zinc-900 bg-black text-white hover:border-yellow-400 hover:text-yellow-400"
                   }`}
                 >
                   <span className="font-mono font-bold text-xs">
@@ -181,6 +187,6 @@ export function FormatPicker({
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }
