@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="218" height="48" viewBox="0 0 218 48" role="img" aria-labelledby="title">
+  <title id="title">Open live preview</title>
+  <rect width="218" height="48" rx="24" fill="#facc15"/>
+  <text x="24" y="30" fill="#18150e" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">Open live preview</text>
+  <path d="M177 24h16m-6-6 6 6-6 6" fill="none" stroke="#18150e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

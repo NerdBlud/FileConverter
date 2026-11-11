@@ -1,103 +1,57 @@
 # FileConverter
 
-Client-side file conversion web application. Converts video, audio, image, and document files directly inside the browser using WebAssembly.
+![FileConverter — images, audio, video, and PDFs converted on your device](docs/media/fileconverter-banner.svg)
 
-**[Open the live preview](https://nerdblud.github.io/FileConverter/)** to convert a file in your browser.
+Convert media and work with PDFs directly in your browser. Choose a file, pick an output format, and download the result.
 
-## Features
+[![Open live preview](docs/media/open-live-preview.svg)](https://nerdblud.github.io/FileConverter/)
 
-- In-Browser Processing: All operations run locally inside the browser. No files are uploaded to any server.
-- Web Worker Isolation: Media conversions run on a dedicated Web Worker to prevent UI blocking.
-- Output formats include:
-  - Video: MP4, WebM, MKV, AVI, MOV, WMV, FLV, 3GP, TS, M2TS, NUT, OGV, MPG
-  - Audio: MP3, WAV, AAC, FLAC, OGG, M4A, Opus, WMA, AIFF, AC3, AMR, M4R, MP2, CAF, AU, MKA
-  - Image: PNG, JPG, JPEG, WebP, BMP, TIFF, ICO, TGA, PPM, PGM, PBM, PCX, XPM, QOI, PAM, DPX, JP2
-  - Animation: GIF, APNG
-  - Document: PDF merging and image-to-PDF compilation
-- Advanced Options: Customizable audio bitrate, video resolution scaling, and GIF frame rate.
-- Console Overlay: Real-time FFmpeg process logs, progress tracking, and elapsed timer.
+## Preview
 
-## Tech Stack
+[![FileConverter in the browser showing the dark interface, drag-and-drop area, and yellow Choose files button](docs/media/live-preview.jpg)](https://nerdblud.github.io/FileConverter/)
 
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS
-- FFmpeg.wasm v0.12+
-- pdf-lib
-- Lucide Icons
+## Privacy and safety
 
-## Getting Started
+FileConverter is designed to protect your files by keeping conversion on your device. **The app does not upload your selected files or converted results.** Media conversion runs in a Web Worker, and PDF operations run locally in your browser.
 
-### Prerequisites
+The hosted app loads from GitHub Pages. On the first media conversion in a session, your browser may download the FFmpeg WebAssembly engine from unpkg. That download does not include your files.
 
-Node.js (version 18 or higher) and npm installed on your machine.
+## What you can convert
 
-### Installation
+| Type | Output formats and operations |
+| --- | --- |
+| **Images** | PNG, JPG, JPEG, WebP, BMP, TIFF, ICO, TGA, PPM, PGM, PBM, PCX, XPM, QOI, PAM, DPX, JP2 |
+| **Audio** | MP3, WAV, AAC, FLAC, OGG, M4A, Opus, WMA, AIFF, AC3, AMR, M4R, MP2, CAF, AU, MKA |
+| **Video** | MP4, WebM, MKV, AVI, MOV, WMV, FLV, 3GP, TS, M2TS, NUT, OGV, MPG |
+| **Animation** | GIF, APNG |
+| **PDF** | Merge PDFs or combine images into a PDF |
 
-1. Clone the repository:
+Available output formats depend on the input. After selecting a file, use **Browse all formats** to see the choices. Supported conversions offer options for audio bitrate, video resolution, or GIF frame rate. Open **Conversion log** to inspect progress and FFmpeg messages.
+
+## Run locally
+
+You need Node.js 20.19+ in the 20.x line or Node.js 22.12 or later, plus npm.
+
 ```bash
-git clone https://github.com/nerdblud/FileConverter.git
+git clone https://github.com/NerdBlud/FileConverter.git
 cd FileConverter
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the local development server:
-```bash
+npm ci
 npm run dev
 ```
 
-4. Open your browser and navigate to:
-```text
-http://localhost:5173
-```
+Open [http://localhost:5173](http://localhost:5173) or the URL printed by Vite.
 
-## Production Build
-
-To build the project for production:
+To build and serve the production bundle locally, run:
 
 ```bash
 npm run build
-```
-
-To preview the production build locally:
-
-```bash
 npm run preview
 ```
 
-## Project Structure
+## Tech stack
 
-```text
-FileConverter/
-├── src/
-│   ├── components/
-│   │   ├── ConversionPanel.tsx
-│   │   ├── Dropzone.tsx
-│   │   ├── FormatPicker.tsx
-│   │   ├── TerminalOverlay.tsx
-│   │   └── ui/
-│   ├── hooks/
-│   │   └── useConverter.ts
-│   ├── lib/
-│   │   ├── conversions.ts
-│   │   ├── pdf-utils.ts
-│   │   └── utils.ts
-│   ├── App.tsx
-│   ├── index.css
-│   ├── main.tsx
-│   └── worker.ts
-├── index.html
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── LICENSE
-```
+React 19, TypeScript, Vite, Tailwind CSS, FFmpeg.wasm, pdf-lib, and Lucide.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+[MIT](LICENSE)
