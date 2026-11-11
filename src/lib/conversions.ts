@@ -69,14 +69,15 @@ const EXT_MAP: Record<string, FileCategory> = {
   bmp: "image", tiff: "image", tif: "image", ico: "image", svg: "image",
   avif: "image", tga: "image", ppm: "image", pgm: "image", pbm: "image",
   pcx: "image", xpm: "image", hdr: "image", heic: "image",
+  qoi: "image", pam: "image", dpx: "image", jp2: "image",
   mp4: "video", webm: "video", mkv: "video", avi: "video", mov: "video",
   wmv: "video", flv: "video", m4v: "video", ts: "video", m2ts: "video",
   "3gp": "video", ogv: "video", mpg: "video", mpeg: "video", vob: "video",
-  asf: "video", rm: "video", rmvb: "video",
+  asf: "video", rm: "video", rmvb: "video", nut: "video",
   mp3: "audio", wav: "audio", ogg: "audio", flac: "audio", aac: "audio",
   m4a: "audio", opus: "audio", wma: "audio", aiff: "audio", aif: "audio",
   ac3: "audio", amr: "audio", m4r: "audio", mp2: "audio", caf: "audio",
-  voc: "audio", au: "audio",
+  voc: "audio", au: "audio", mka: "audio",
   pdf: "document", txt: "document", md: "document",
 };
 
@@ -105,6 +106,9 @@ export const ALL_TARGETS: Record<string, ConversionTarget> = {
   ac3: { ext: "ac3", label: "AC3", name: "Dolby Digital", category: "audio", mimeType: "audio/ac3", tag: "Cinema", description: "Dolby multi-channel audio" },
   amr: { ext: "amr", label: "AMR", name: "Adaptive Multi-Rate", category: "audio", mimeType: "audio/amr", tag: "Voice", description: "Speech optimized audio" },
   m4r: { ext: "m4r", label: "M4R", name: "iPhone Ringtone", category: "audio", mimeType: "audio/x-m4r", tag: "Ringtone", description: "iOS ringtone format" },
+  caf: { ext: "caf", label: "CAF", name: "Core Audio Format", category: "audio", mimeType: "audio/x-caf", description: "Apple audio container with uncompressed PCM" },
+  au: { ext: "au", label: "AU", name: "Sun Audio", category: "audio", mimeType: "audio/basic", description: "Sun and NeXT audio container with uncompressed PCM" },
+  mka: { ext: "mka", label: "MKA", name: "Matroska Audio", category: "audio", mimeType: "audio/x-matroska", description: "Matroska audio container with lossless FLAC" },
   mp2: { ext: "mp2", label: "MP2", name: "MPEG Audio Layer II", category: "audio", mimeType: "audio/mpeg", tag: "Broadcast", description: "Broadcast audio format" },
 
   mp4: { ext: "mp4", label: "MP4", name: "MPEG-4 Video", category: "video", mimeType: "video/mp4", tag: "Universal", description: "H.264/AAC universal video" },
@@ -116,6 +120,8 @@ export const ALL_TARGETS: Record<string, ConversionTarget> = {
   flv: { ext: "flv", label: "FLV", name: "Flash Video", category: "video", mimeType: "video/x-flv", tag: "Legacy", description: "Flash video format" },
   "3gp": { ext: "3gp", label: "3GP", name: "3GPP Mobile Video", category: "video", mimeType: "video/3gpp", tag: "Mobile", description: "Mobile video format" },
   ts: { ext: "ts", label: "TS", name: "MPEG Transport Stream", category: "video", mimeType: "video/mp2t", tag: "Broadcast", description: "Broadcast transport stream" },
+  m2ts: { ext: "m2ts", label: "M2TS", name: "Blu-ray Transport Stream", category: "video", mimeType: "video/mp2t", description: "192-byte MPEG transport stream used by Blu-ray and AVCHD" },
+  nut: { ext: "nut", label: "NUT", name: "NUT Multimedia Container", category: "video", mimeType: "video/x-nut", description: "Open video container used by FFmpeg" },
   ogv: { ext: "ogv", label: "OGV", name: "Ogg Theora Video", category: "video", mimeType: "video/ogg", tag: "Open", description: "Open source video format" },
   mpg: { ext: "mpg", label: "MPG", name: "MPEG Video", category: "video", mimeType: "video/mpeg", tag: "Classic", description: "MPEG-1/MPEG-2 format" },
 
@@ -131,6 +137,10 @@ export const ALL_TARGETS: Record<string, ConversionTarget> = {
   pgm: { ext: "pgm", label: "PGM", name: "Portable Graymap", category: "image", mimeType: "image/x-portable-graymap", tag: "Grayscale", description: "Grayscale 8-bit image" },
   pbm: { ext: "pbm", label: "PBM", name: "Portable Bitmap", category: "image", mimeType: "image/x-portable-bitmap", tag: "Monochrome", description: "1-bit monochrome bitmap" },
   pcx: { ext: "pcx", label: "PCX", name: "PiCture eXchange", category: "image", mimeType: "image/x-pcx", tag: "Retro", description: "Classic PC paintbrush" },
+  qoi: { ext: "qoi", label: "QOI", name: "Quite OK Image", category: "image", mimeType: "image/qoi", description: "Lossless RGB or RGBA image" },
+  pam: { ext: "pam", label: "PAM", name: "Portable Arbitrary Map", category: "image", mimeType: "image/x-portable-arbitrarymap", description: "Netpbm image with alpha support" },
+  dpx: { ext: "dpx", label: "DPX", name: "Digital Picture Exchange", category: "image", mimeType: "image/x-dpx", description: "Single-frame format used in film workflows" },
+  jp2: { ext: "jp2", label: "JP2", name: "JPEG 2000", category: "image", mimeType: "image/jp2", description: "JPEG 2000 still image" },
   xpm: { ext: "xpm", label: "XPM", name: "X-PixMap", category: "image", mimeType: "image/x-xpixmap", tag: "Unix", description: "ASCII text image" },
 
   gif: { ext: "gif", label: "GIF", name: "Animated GIF", category: "animation", mimeType: "image/gif", tag: "Animated", description: "Animated graphic format" },
@@ -152,11 +162,11 @@ export function getSmartTargets(file: File): {
   if (cat === "video") {
     recKeys.push("mp3", "gif", "webm", "mkv", "wav", "jpg", "png", "avi", "mov");
 
-    ["mp3", "wav", "aac", "flac", "ogg", "m4a", "opus", "wma", "aiff", "ac3", "amr", "m4r", "mp2"].forEach((k) => {
+    ["mp3", "wav", "aac", "flac", "ogg", "m4a", "opus", "wma", "aiff", "ac3", "amr", "m4r", "mp2", "caf", "au", "mka"].forEach((k) => {
       if (ALL_TARGETS[k]) targetsList.push(ALL_TARGETS[k]);
     });
 
-    ["mp4", "webm", "mkv", "avi", "mov", "wmv", "flv", "3gp", "ts", "ogv", "mpg"].forEach((k) => {
+    ["mp4", "webm", "mkv", "avi", "mov", "wmv", "flv", "3gp", "ts", "ogv", "mpg", "m2ts", "nut"].forEach((k) => {
       if (k !== ext && ALL_TARGETS[k]) targetsList.push(ALL_TARGETS[k]);
     });
 
@@ -166,13 +176,13 @@ export function getSmartTargets(file: File): {
   } else if (cat === "audio") {
     recKeys.push("wav", "flac", "ogg", "aac", "m4a", "opus", "mp3");
 
-    ["mp3", "wav", "aac", "flac", "ogg", "m4a", "opus", "wma", "aiff", "ac3", "amr", "m4r", "mp2"].forEach((k) => {
+    ["mp3", "wav", "aac", "flac", "ogg", "m4a", "opus", "wma", "aiff", "ac3", "amr", "m4r", "mp2", "caf", "au", "mka"].forEach((k) => {
       if (k !== ext && ALL_TARGETS[k]) targetsList.push(ALL_TARGETS[k]);
     });
   } else if (cat === "image") {
     recKeys.push("png", "jpg", "webp", "pdf", "ico", "bmp", "gif");
 
-    ["png", "jpg", "jpeg", "webp", "gif", "bmp", "tiff", "ico", "pdf", "tga", "ppm", "pgm", "pbm", "pcx", "xpm"].forEach((k) => {
+    ["png", "jpg", "jpeg", "webp", "gif", "bmp", "tiff", "ico", "pdf", "tga", "ppm", "pgm", "pbm", "pcx", "xpm", "qoi", "pam", "dpx", "jp2"].forEach((k) => {
       if (k !== ext && ALL_TARGETS[k]) targetsList.push(ALL_TARGETS[k]);
     });
   } else if (cat === "document") {
@@ -220,6 +230,11 @@ export function buildFFmpegCommand(
     : "";
 
   const gifFps = options?.gifFps || 12;
+
+  if (outputExt === "caf" || outputExt === "au" || outputExt === "mka") {
+    const codec = outputExt === "mka" ? "flac" : "pcm_s16be";
+    return ["-i", inputName, "-map", "0:a:0", "-c:a", codec, outputName];
+  }
 
   if (inCat === "video" && (outCat === "audio" || ["mp3", "wav", "aac", "flac", "ogg", "m4a", "opus", "wma", "aiff", "ac3", "amr", "m4r", "mp2"].includes(outputExt))) {
     switch (outputExt) {
@@ -282,6 +297,10 @@ export function buildFFmpegCommand(
         return ["-i", inputName, ...vfArgs, "-c:v", "flv", "-c:a", "libmp3lame", outputName];
       case "3gp":
         return ["-i", inputName, "-c:v", "h263", "-s", "352x288", "-r", "15", "-c:a", "amr_nb", "-ar", "8000", "-ac", "1", outputName];
+      case "m2ts":
+        return ["-i", inputName, ...vfArgs, "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "ac3", "-f", "mpegts", "-mpegts_m2ts_mode", "1", outputName];
+      case "nut":
+        return ["-i", inputName, ...vfArgs, "-c:v", "libx264", "-preset", "ultrafast", "-crf", crf, "-c:a", "aac", outputName];
       case "ts":
         return ["-i", inputName, ...vfArgs, "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac", outputName];
       default:
@@ -317,6 +336,9 @@ export function buildFFmpegCommand(
   }
 
   if (inCat === "image") {
+    if (outputExt === "jp2") {
+      return ["-i", inputName, "-frames:v", "1", "-c:v", "jpeg2000", "-pred", "1", "-update", "1", outputName];
+    }
     if (outputExt === "ico") {
       return ["-i", inputName, "-vf", "scale=256:256", "-frames:v", "1", "-update", "1", outputName];
     }

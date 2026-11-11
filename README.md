@@ -8,10 +8,10 @@ Client-side file conversion web application. Converts video, audio, image, and d
 
 - In-Browser Processing: All operations run locally inside the browser. No files are uploaded to any server.
 - Web Worker Isolation: Media conversions run on a dedicated Web Worker to prevent UI blocking.
-- Over 100 Supported Formats:
-  - Video: MP4, WebM, MKV, AVI, MOV, WMV, FLV, 3GP, TS, OGV, MPG
-  - Audio: MP3, WAV, AAC, FLAC, OGG, M4A, Opus, WMA, AIFF, AC3, AMR, M4R, MP2
-  - Image: PNG, JPG, JPEG, WebP, BMP, TIFF, ICO, TGA, PPM, PGM, PBM, PCX, XPM
+- Output formats include:
+  - Video: MP4, WebM, MKV, AVI, MOV, WMV, FLV, 3GP, TS, M2TS, NUT, OGV, MPG
+  - Audio: MP3, WAV, AAC, FLAC, OGG, M4A, Opus, WMA, AIFF, AC3, AMR, M4R, MP2, CAF, AU, MKA
+  - Image: PNG, JPG, JPEG, WebP, BMP, TIFF, ICO, TGA, PPM, PGM, PBM, PCX, XPM, QOI, PAM, DPX, JP2
   - Animation: GIF, APNG
   - Document: PDF merging and image-to-PDF compilation
 - Advanced Options: Customizable audio bitrate, video resolution scaling, and GIF frame rate.
