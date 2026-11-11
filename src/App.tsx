@@ -33,18 +33,19 @@ export default function App() {
     converter.status === "error";
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 px-4 py-8 sm:px-6 sm:py-16 font-sans">
-      <main className="mx-auto w-full max-w-2xl space-y-8">
-        <header className="space-y-4">
-          <div className="grid size-12 place-items-center rounded-xl border border-yellow-400/20 bg-yellow-400/10 text-yellow-400">
-            <ArrowLeftRight className="size-5" aria-hidden="true" />
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">FileConverter</h1>
-            <p className="max-w-prose text-sm leading-relaxed text-zinc-400 sm:text-base">
-              Convert images, audio, video, and PDFs in your browser.
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#f7f8fa] px-4 py-6 font-sans text-slate-950 sm:px-8 sm:py-8">
+      <div className="mx-auto flex max-w-6xl items-center gap-2.5 text-sm font-semibold tracking-tight">
+        <span className="grid size-8 place-items-center rounded-lg bg-slate-950 text-white">
+          <ArrowLeftRight className="size-4" aria-hidden="true" />
+        </span>
+        FileConverter
+      </div>
+      <main className="mx-auto w-full max-w-xl space-y-6 pt-12 pb-10 sm:pt-20">
+        <header className="space-y-3 text-center">
+          <h1 className="text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Convert files</h1>
+          <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
+            Images, audio, video, and PDFs.
+          </p>
         </header>
         {!files && <Dropzone onFilesSelected={handleFilesSelected} />}
 
@@ -68,9 +69,9 @@ export default function App() {
             onReset={handleReset}
           />
         )}
-        <p className="flex items-center gap-2 text-sm text-zinc-400">
-          <ShieldCheck className="size-4 shrink-0 text-yellow-400" aria-hidden="true" />
-          Your files stay on this device.
+        <p className="flex items-center justify-center gap-2 text-sm text-slate-600">
+          <ShieldCheck className="size-4 shrink-0 text-slate-500" aria-hidden="true" />
+          Files are processed on your device.
         </p>
       </main>
     </div>

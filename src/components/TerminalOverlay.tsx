@@ -42,101 +42,107 @@ export function TerminalOverlay({
 
   const statusText =
     status === "loading"
-      ? "LOADING"
+      ? "Preparing conversion"
       : status === "converting"
-      ? `CONVERTING ${Math.round(progress * 100)}%`
+      ? `Converting · ${Math.round(progress * 100)}%`
       : status === "done"
-      ? "DONE"
+      ? "Conversion complete"
       : status === "error"
-      ? "ERROR"
-      : "READY";
+      ? "Conversion failed"
+      : "Ready";
 
   return (
-    <div className="border border-zinc-800 rounded-2xl p-4 sm:p-6 bg-zinc-900 text-white space-y-4 font-mono animate-pop-in">
-      <div className="flex items-center justify-between border-b border-zinc-800 pb-3 text-xs">
+    <div className="border border-slate-200 rounded-2xl p-4 sm:p-6 bg-white text-slate-950 space-y-4 animate-pop-in">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span
-            className={`font-bold tracking-wider ${
+            role="status"
+            className={`text-base font-semibold ${
               status === "done"
-                ? "text-yellow-400"
+                ? "text-blue-700"
                 : status === "error"
-                ? "text-red-400"
-                : "text-white"
+                ? "text-red-700"
+                : "text-slate-950"
             }`}
           >
             {statusText}
           </span>
         </div>
 
-        <div className="flex items-center gap-3 text-zinc-500">
+        <div className="flex items-center gap-3 text-slate-600">
           {(status === "converting" || status === "done") && (
-            <span className="flex items-center gap-1 text-[11px] text-zinc-400">
-              <Clock className="h-3 w-3 text-yellow-400" />
+            <span className="flex items-center gap-1 text-xs text-slate-600">
+              <Clock className="h-3 w-3 text-blue-700" />
               {formattedTime}
             </span>
           )}
-
-          <button
-            type="button"
-            onClick={handleCopyLogs}
-            className="hover:text-yellow-400 flex items-center gap-1 transition-colors cursor-pointer"
-            title="Copy logs"
-          >
-            {copied ? <Check className="h-3 w-3 text-yellow-400" /> : <Copy className="h-3 w-3" />}
-            <span>{copied ? "COPIED" : "COPY"}</span>
-          </button>
         </div>
       </div>
 
-      <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
+      <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
         <div
-          className="bg-yellow-400 h-full transition-all duration-200 shadow-[0_0_10px_rgba(250,204,21,0.5)]"
+          className="bg-blue-700 h-full transition-all duration-200"
           style={{ width: `${Math.max(progress * 100, status === "loading" ? 10 : 0)}%` }}
         />
       </div>
 
-      <div
-        ref={scrollRef}
-        className="h-60 overflow-y-auto bg-zinc-950 border border-zinc-900 rounded-xl p-3.5 text-xs space-y-1.5 text-zinc-400"
-      >
-        {logs.length === 0 ? (
-          <p className="text-zinc-600 flex items-center gap-1">
-            <span>Running</span>
-            <span className="inline-block w-1.5 h-3.5 bg-yellow-400 animate-cursor" />
-          </p>
-        ) : (
-          <>
-            {logs.map((log, i) => (
-              <p
-                key={i}
-                className={`leading-relaxed break-all ${
-                  log.includes("Processing complete") || log.includes("Done")
-                    ? "text-yellow-400 font-bold"
-                    : log.includes("Error") || log.includes("failed")
-                    ? "text-red-400"
-                    : "text-zinc-400"
-                }`}
-              >
-                <span className="text-zinc-600 select-none">&gt; </span>
-                {log}
-              </p>
-            ))}
-            {(status === "converting" || status === "loading") && (
-              <p className="text-yellow-400 flex items-center gap-1">
-                <span className="text-zinc-600 select-none">&gt; </span>
-                <span className="inline-block w-2 h-3.5 bg-yellow-400 animate-cursor" />
-              </p>
-            )}
-          </>
-        )}
-      </div>
+      <details open={status === "error"} className="space-y-3">
+        <summary className="w-fit cursor-pointer rounded-sm text-sm font-medium text-slate-600">
+          Conversion log
+        </summary>
+        <div
+          ref={scrollRef}
+          className="max-h-52 overflow-y-auto font-mono bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs space-y-1.5 text-slate-600"
+        >
+          {logs.length === 0 ? (
+            <p className="text-slate-600 flex items-center gap-1">
+              <span>Running</span>
+              <span className="inline-block w-1.5 h-3.5 bg-blue-700 animate-cursor" />
+            </p>
+          ) : (
+            <>
+              {logs.map((log, i) => (
+                <p
+                  key={i}
+                  className={`leading-relaxed break-all ${
+                    log.includes("Processing complete") || log.includes("Done")
+                      ? "text-blue-700 font-bold"
+                      : log.includes("Error") || log.includes("failed")
+                      ? "text-red-700"
+                      : "text-slate-600"
+                  }`}
+                >
+                  <span className="text-slate-600 select-none">&gt; </span>
+                  {log}
+                </p>
+              ))}
+              {(status === "converting" || status === "loading") && (
+                <p className="text-blue-700 flex items-center gap-1">
+                  <span className="text-slate-600 select-none">&gt; </span>
+                  <span className="inline-block w-2 h-3.5 bg-blue-700 animate-cursor" />
+                </p>
+              )}
+            </>
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={handleCopyLogs}
+          className="flex min-h-9 cursor-pointer items-center gap-1.5 rounded-md px-2 text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-700"
+          title="Copy logs"
+        >
+          {copied ? <Check className="h-3 w-3 text-blue-700" /> : <Copy className="h-3 w-3" />}
+          <span>{copied ? "Copied" : "Copy log"}</span>
+        </button>
+      </details>
 
       {status === "done" && resultUrl && (
         <div className="flex flex-wrap items-center gap-2 pt-2 animate-pop-in">
           <a
             href={resultUrl}
             download={resultFilename ?? "converted-file"}
-            className="flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg bg-yellow-400 px-4 text-center text-sm font-semibold text-zinc-950 transition-colors hover:bg-yellow-300"
+            className="flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg bg-blue-700 px-4 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-800"
           >
             <Download className="h-4 w-4" />
             <span className="min-w-0 truncate">Download {resultFilename}</span>
@@ -144,7 +150,7 @@ export function TerminalOverlay({
           <button
             type="button"
             onClick={onReset}
-            className="h-12 px-5 rounded-xl border border-zinc-800 text-white hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95"
+            className="min-h-11 cursor-pointer rounded-lg px-3 text-sm font-medium text-blue-700 hover:bg-blue-50"
           >
             Convert another
           </button>
@@ -153,13 +159,13 @@ export function TerminalOverlay({
 
       {status === "error" && (
         <div className="space-y-2 pt-2 animate-pop-in">
-          <p className="text-xs text-red-400 border border-red-900/40 p-2.5 rounded-lg bg-red-950/20">
+          <p className="text-xs text-red-700 border border-red-200 p-2.5 rounded-lg bg-red-50">
             {error || "Conversion failed."}
           </p>
           <button
             type="button"
             onClick={onReset}
-            className="w-full h-11 rounded-xl border border-zinc-800 text-white hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95"
+            className="w-full h-11 rounded-xl border border-slate-200 text-slate-950 hover:border-blue-600 hover:text-blue-700 text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95"
           >
             Choose different files
           </button>

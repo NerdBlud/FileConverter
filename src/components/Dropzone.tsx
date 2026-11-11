@@ -53,30 +53,28 @@ export function Dropzone({ onFilesSelected }: DropzoneProps) {
   };
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-3 sm:p-4">
-      <div
-        className={`flex min-h-64 flex-col items-center justify-center gap-4 rounded-xl border border-dashed px-4 py-8 text-center transition-colors ${
-          isDragActive
-            ? "border-yellow-400 bg-yellow-400/10"
-            : "border-zinc-600 bg-zinc-950/60"
-        }`}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
+    <div
+      className={`flex min-h-72 flex-col items-center justify-center gap-5 rounded-2xl border border-dashed bg-white px-4 py-10 text-center transition-colors ${
+        isDragActive ? "border-blue-600 bg-blue-50" : "border-slate-300"
+      }`}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <span className="grid size-12 place-items-center rounded-xl bg-slate-100 text-slate-700">
+        <Upload className="size-5" aria-hidden="true" />
+      </span>
+      <p className="text-base font-medium">
+        {isDragActive ? "Release to add your files" : "Drag and drop your files here"}
+      </p>
+      <button
+        type="button"
+        onClick={handleClick}
+        className="min-h-11 cursor-pointer rounded-lg bg-blue-700 px-5 text-sm font-semibold text-white transition-colors hover:bg-blue-800"
       >
-        <Upload className="size-6 text-yellow-400" aria-hidden="true" />
-        <p className="text-base font-medium">
-          {isDragActive ? "Release to add your files" : "Drag and drop your files here"}
-        </p>
-        <button
-          type="button"
-          onClick={handleClick}
-          className="min-h-11 cursor-pointer rounded-lg bg-yellow-400 px-5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-yellow-300"
-        >
-          Choose files
-        </button>
-      </div>
+        Choose files
+      </button>
       <input
         ref={inputRef}
         type="file"
