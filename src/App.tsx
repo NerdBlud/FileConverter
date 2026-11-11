@@ -33,17 +33,17 @@ export default function App() {
     converter.status === "error";
 
   return (
-    <div className="min-h-screen bg-[#f7f8fa] px-4 py-6 font-sans text-slate-950 sm:px-8 sm:py-8">
+    <div className="min-h-screen bg-workspace px-4 py-6 font-sans text-workspace-ink sm:px-8 sm:py-8">
       <div className="mx-auto flex max-w-6xl items-center gap-2.5 text-sm font-semibold tracking-tight">
-        <span className="grid size-8 place-items-center rounded-lg bg-slate-950 text-white">
+        <span className="grid size-8 place-items-center rounded-xl border border-workspace-line bg-workspace-panel text-workspace-accent">
           <ArrowLeftRight className="size-4" aria-hidden="true" />
         </span>
         FileConverter
       </div>
-      <main className="mx-auto w-full max-w-xl space-y-6 pt-12 pb-10 sm:pt-20">
-        <header className="space-y-3 text-center">
-          <h1 className="text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Convert files</h1>
-          <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
+      <main className="mx-auto w-full max-w-xl space-y-7 pt-16 pb-12 sm:pt-28">
+        <header className="space-y-4 text-center">
+          <h1 className="text-5xl leading-[0.98] font-bold tracking-[-0.065em] sm:text-7xl">Convert files</h1>
+          <p className="text-sm leading-relaxed text-workspace-muted sm:text-base">
             Images, audio, video, and PDFs.
           </p>
         </header>
@@ -69,8 +69,8 @@ export default function App() {
             onReset={handleReset}
           />
         )}
-        <p className="flex items-center justify-center gap-2 text-sm text-slate-600">
-          <ShieldCheck className="size-4 shrink-0 text-slate-500" aria-hidden="true" />
+        <p className="flex items-center justify-center gap-2 text-xs text-workspace-muted">
+          <ShieldCheck className="size-4 shrink-0 text-workspace-muted" aria-hidden="true" />
           Files are processed on your device.
         </p>
       </main>

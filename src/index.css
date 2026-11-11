@@ -1,6 +1,17 @@
 @import "tailwindcss";
 
 @theme {
+  --color-workspace: #111416;
+  --color-workspace-panel: #191d20;
+  --color-workspace-control: #252b2e;
+  --color-workspace-line: #303639;
+  --color-workspace-edge: #535e63;
+  --color-workspace-ink: #f2f5f4;
+  --color-workspace-muted: #a8b4b2;
+  --color-workspace-accent: #a9eccd;
+  --color-workspace-accent-hover: #c4f5df;
+  --color-workspace-tint: #223730;
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -27,7 +38,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 204 13% 8%;
     --foreground: 0 0% 100%;
     --card: 0 0% 4%;
     --card-foreground: 0 0% 100%;
@@ -83,8 +94,8 @@
 }
 
 ::selection {
-  background-color: #facc15;
-  color: #000000;
+  background-color: var(--color-workspace-accent);
+  color: var(--color-workspace);
 }
 
 @keyframes cursorBlink {
@@ -98,8 +109,8 @@
 }
 
 @keyframes popIn {
-  0% { opacity: 0; transform: scale(0.96) translateY(8px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 .animate-pop-in {
@@ -116,7 +127,7 @@
 
 @layer base {
   :where(button, a, input, summary):focus-visible {
-    outline: 2px solid var(--color-blue-600);
+    outline: 2px solid var(--color-workspace-accent);
     outline-offset: 3px;
   }
 }
